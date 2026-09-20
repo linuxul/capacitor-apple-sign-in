@@ -1,25 +1,23 @@
 import XCTest
+import AuthenticationServices
 import Capacitor
-@testable import Plugin
+@testable import SignInWithApple
 
 class PluginTests: XCTestCase {
+    private func call(scopes: String?) -> CAPPluginCall {
+        var options: JSObject = [:]
+        if let scopes = scopes {
+            options["scopes"] = scopes
+        }
+        return CAPPluginCall(callbackId: "test", methodName: "authorize", options: options, success: { (_, _) in }, error: { _ in })
+    }
 
-    func testEcho() {
-        // This is an example of a functional test case for a plugin.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testRequestedScopes() {
+        let plugin = SignInWithApple()
 
-        let value = "Hello, World!"
-        let plugin = MyPlugin()
-
-        let call = CAPPluginCall(callbackId: "test", options: [
-            "value": value
-        ], success: { (result, _) in
-            let resultValue = result!.data["value"] as? String
-            XCTAssertEqual(value, resultValue)
-        }, error: { (_) in
-            XCTFail("Error shouldn't have been called")
-        })
-
-        plugin.echo(call!)
+        XCTAssertEqual([.fullName, .email], plugin.getRequestedScopes(from: call(scopes: "email name")))
+        XCTAssertEqual([.email], plugin.getRequestedScopes(from: call(scopes: "email")))
+        XCTAssertNil(plugin.getRequestedScopes(from: call(scopes: "other")))
+        XCTAssertNil(plugin.getRequestedScopes(from: call(scopes: nil)))
     }
 }

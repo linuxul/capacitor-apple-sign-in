@@ -7,7 +7,7 @@ public class SignInWithApple: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "SignInWithApple" 
     public let jsName = "SignInWithApple" 
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "authorize", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "authorize", returnType: .promise),
     ] 
 
     @objc func authorize(_ call: CAPPluginCall) {
